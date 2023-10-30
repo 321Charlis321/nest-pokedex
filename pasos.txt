@@ -1,0 +1,11 @@
+
+1 : Configuración global de pipes:
+app.useGlobalPipes(
+ new ValidationPipe({
+ whitelist: true,
+ forbidNonWhitelisted: true,
+ })
+);
+
+2:Librerías externas útiles:
+yarn add class-validator class-transformer

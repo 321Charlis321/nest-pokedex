@@ -1,0 +1,2 @@
+Servir contenido estático: 
+yarn add @nestjs/serve-static
