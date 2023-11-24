@@ -9,3 +9,7 @@ app.useGlobalPipes(
 
 2:Librerías externas útiles:
 yarn add class-validator class-transformer
+
+
+4:isntalar para las variables de entorno 
+npm i @nestjs/config 

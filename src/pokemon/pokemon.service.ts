@@ -5,14 +5,39 @@ import { Pokemon } from './entities/pokemon.entity';
 
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
+import { PaginationDto } from '../comon/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
 
+  private defaulLimit: number;
+
   constructor(
     @InjectModel(Pokemon.name)
-    private readonly pokemonModel: Model<Pokemon>
-  ) { }
+    private readonly pokemonModel: Model<Pokemon>,
+    private readonly configService: ConfigService
+  ) {
+
+    this.defaulLimit = configService.get<number>('defaultLimit')
+
+
+  }
+
+
+  findAll(paginationDto: PaginationDto) {
+
+    const { limit = this.defaulLimit, offset = 0 } = paginationDto; // si no pone el usuario el limite por defecto sera 10 e igual con el oofset = 0
+
+
+    return this.pokemonModel.find()
+      .limit(limit)
+      .skip(offset)//Para saltarse los primeros 10
+      .sort({
+        no: 1
+      })
+      .select('-__v')
+  }
 
   async create(createPokemonDto: CreatePokemonDto) {
     createPokemonDto.name = createPokemonDto.name.toLowerCase();
@@ -28,10 +53,6 @@ export class PokemonService {
     }
 
 
-  }
-
-  findAll() {
-    return this.pokemonModel;
   }
 
   async findOne(term: string) {
@@ -86,14 +107,12 @@ export class PokemonService {
     // const result = await this.pokemonModel.findByIdAndDelete(id);
     const { deletedCount } = await this.pokemonModel.deleteOne({ _id: id });
     if (deletedCount === 0) {
-      throw new BadRequestException(`Pokemon with id "${id}" not found`);
+      throw new BadRequestException(`Frase with id "${id}" not found`);
     }
     return; //aqui regrearia el status 200 de que si se elimino
+    // `Frase con id ${id} Eliminado`;
 
   }
-
-
-
 
   private handleException(error: any) {
 
